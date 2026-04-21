@@ -15,11 +15,24 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (session) {
-      fetch("/api/user/me")
-        .then(r => r.json())
+      fetch("/api/user")
+        .then(r => {
+          if (!r.ok) throw new Error("Failed to fetch user")
+          return r.json()
+        })
         .then(data => {
           setUser(data)
           setLookingFor(data.lookingFor || "")
+        })
+        .catch(() => {
+          setTimeout(() => {
+            fetch("/api/user")
+              .then(r => r.json())
+              .then(data => {
+                setUser(data)
+                setLookingFor(data.lookingFor || "")
+              })
+          }, 2000)
         })
     }
   }, [session])

@@ -1,11 +1,12 @@
 import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 import { connectDB } from "@/lib/mongodb"
 import User from "@/models/User"
 import { fetchGitHubProfile } from "@/lib/github"
 import { NextResponse } from "next/server"
 
 export async function POST() {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
 
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

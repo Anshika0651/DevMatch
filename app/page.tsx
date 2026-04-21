@@ -1,49 +1,18 @@
 "use client"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
   const { data: session } = useSession()
+  const router = useRouter()
 
   useEffect(() => {
     if (session) {
       fetch("/api/user/sync", { method: "POST" })
+      router.push("/dashboard")
     }
   }, [session])
-
-  if (session) {
-    return (
-      <main style={{
-        background: "#0f1117",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        gap: "12px",
-        fontFamily: "Inter, sans-serif"
-      }}>
-        <p style={{ color: "#a3ff47", fontSize: "18px", fontWeight: 700 }}>
-          Welcome back, {session.user?.name}
-        </p>
-        <p style={{ color: "#6b7a99", fontSize: "14px" }}>
-          @{(session.user as any).username}
-        </p>
-        <button onClick={() => signOut()} style={{
-          marginTop: "12px",
-          background: "transparent",
-          border: "1px solid #2a3050",
-          color: "#fff",
-          padding: "8px 20px",
-          borderRadius: "8px",
-          cursor: "pointer",
-          fontSize: "13px"
-        }}>
-          Logout
-        </button>
-      </main>
-    )
-  }
 
   return (
     <main style={{ background: "#0f1117", minHeight: "100vh", fontFamily: "Inter, sans-serif" }}>
